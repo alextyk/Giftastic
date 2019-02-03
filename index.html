@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Giftastic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="button-div">
+
+                </div>
+                <div class="animal-div">
+                    
+                </div>
+            </div>
+            <div class="col-md-4">
+                <form>
+                    <div class="form-group">
+                        <label for="animal-input">Add An Animal</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript"> 
+    
+        $( document ).ready(function() {
+        var animals = ["turkey", "dog", "cat", "monkey", "llama", "parrot", "fish", "dolphin", "whale", "lizard", "bald eagle", "dinosaur", "pig", "crab", "buffalo", "bobcat", "seahorse"]
+        
+        // function to render the buttons for the array
+        function renderButtons() {
+            $(".button-div").empty()
+            for (var i = 0; i < animals.length; i++) {
+                var button = $("<button>");
+                button.addClass("animal-class");
+                button.text(animals[i]);
+                button.attr("data-name", animals[i]);
+                $(".button-div").append(button);
+            }
+        };
+        renderButtons();
+       
+        // function to retrieve gifs and ratings and inject them into the page when button is clicked
+        $(document).on("click", ".animal-class", function () {
+            var animal = $(this).attr("data-name");
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animal + "&api_key=GiqfAbbFhjLqkVoWZQBKSDemQu8hwtG3&limit=10";
+            console.log(queryURL);
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+
+                }).then(function(response) {
+
+                    for (var i = 0; i < 10; i++) {
+                        var animalImage = $("<img>");
+                        var ratingDiv = $("<p>").text(response.data[i].rating);
+                        var imageURL = response.data[i].images.fixed_height.url
+                        animalImage.attr("src", imageURL);
+                        animalImage.append(ratingDiv);
+                        animalImage.addClass("gif");
+                        $(".animal-div").prepend(ratingDiv);
+                        $(".animal-div").prepend(animalImage);
+                    }
+                });
+        });
+        
+        // on click function to add a button when entered into the text box
+        $("#submit").on("click", function(event) {
+            event.preventDefault();
+            var newAnimal = $(".form-control").val().trim();
+            animals.push(newAnimal);
+            renderButtons();
+        });
+        // on click button to get the gifs to pause or unpause when clicked
+        $(".gif").on("click", function() {
+            var state = $(this).attr("data-state");
+            var animate = $(this).attr("data-animate");
+            var still = $(this).attr("data-still");
+
+        });
+        });
+    </script>
+
+    
+</body>
+</html>
